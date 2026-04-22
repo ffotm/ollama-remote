@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 const MODES = [
-  { id: 'general',   icon: '◈', label: 'General',       color: '#00d4aa' },
-  { id: 'cve',       icon: '⚠', label: 'CVE Explainer', color: '#ff4d6d' },
-  { id: 'log',       icon: '📋', label: 'Log Analyzer',  color: '#ffb347' },
-  { id: 'codevuln',  icon: '🔍', label: 'Code Auditor',  color: '#0097ff' },
+  { id: 'general',   icon: '◈', label: 'General',       color: 'var(--accent)' },
+  { id: 'cve',       icon: '⚠', label: 'CVE Explainer', color: 'var(--danger)' },
+  { id: 'log',       icon: '📋', label: 'Log Analyzer',  color: 'var(--accent2)' },
+  { id: 'codevuln',  icon: '🔍', label: 'Code Auditor',  color: 'var(--warn)' },
 ]
 
 export default function Sidebar({
@@ -37,7 +37,7 @@ export default function Sidebar({
       <div style={styles.section}>
         <div style={styles.sectionLabel}>ENDPOINT</div>
         <div style={styles.endpointRow}>
-          <div style={{...styles.statusDot, background: status === 'online' ? '#39d353' : status === 'error' ? '#ff4d6d' : '#4d6070', boxShadow: status === 'online' ? '0 0 6px #39d353' : status === 'error' ? '0 0 6px #ff4d6d' : 'none'}} />
+          <div style={{...styles.statusDot, background: status === 'online' ? 'var(--accent)' : status === 'error' ? 'var(--danger)' : 'var(--muted)', boxShadow: status === 'online' ? '0 0 6px var(--accent)' : status === 'error' ? '0 0 6px var(--danger)' : 'none'}} />
           <input
             style={styles.endpointInput}
             value={endpoint}
@@ -87,7 +87,7 @@ export default function Sidebar({
         </div>
         <div style={styles.chatList}>
           {conversations.length === 0 && (
-            <div style={{color: '#4d6070', fontSize: '0.72rem', padding: '8px 0', fontFamily: 'IBM Plex Mono, monospace'}}>no conversations yet</div>
+            <div style={{color: 'var(--muted)', fontSize: '0.72rem', padding: '8px 0', fontFamily: 'IBM Plex Mono, monospace'}}>no conversations yet</div>
           )}
           {conversations.map(conv => (
             <div
@@ -127,8 +127,8 @@ const styles = {
     width: 240,
     minWidth: 240,
     height: '100%',
-    background: '#0d1117',
-    borderRight: '1px solid #1c2733',
+    background: 'var(--surface)',
+    borderRight: '1px solid var(--border)',
     display: 'flex',
     flexDirection: 'column',
     padding: '16px 12px',
@@ -142,57 +142,57 @@ const styles = {
     gap: 8,
     marginBottom: 20,
     paddingBottom: 14,
-    borderBottom: '1px solid #1c2733',
+    borderBottom: '1px solid var(--border)',
   },
-  logoIcon: { color: '#00d4aa', fontSize: '1.1rem' },
+  logoIcon: { color: 'var(--accent)', fontSize: '1.1rem' },
   logoText: {
     fontFamily: 'Archivo Black, sans-serif',
     fontSize: '0.85rem',
     letterSpacing: '0.12em',
-    color: '#cdd9e5',
+    color: 'var(--text)',
   },
   section: { marginBottom: 18 },
   sectionLabel: {
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: '0.58rem',
     letterSpacing: '0.15em',
-    color: '#4d6070',
+    color: 'var(--muted)',
     marginBottom: 7,
   },
   endpointRow: { display: 'flex', alignItems: 'center', gap: 7 },
   statusDot: { width: 7, height: 7, borderRadius: '50%', flexShrink: 0, transition: 'all .3s' },
   endpointInput: {
     flex: 1,
-    background: '#080b0f',
-    border: '1px solid #1c2733',
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
     borderRadius: 6,
     padding: '5px 8px',
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: '0.65rem',
-    color: '#cdd9e5',
+    color: 'var(--text)',
     outline: 'none',
     width: 0,
   },
   modelRow: { display: 'flex', gap: 6 },
   modelSelect: {
     flex: 1,
-    background: '#080b0f',
-    border: '1px solid #1c2733',
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
     borderRadius: 6,
     padding: '5px 8px',
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: '0.65rem',
-    color: '#cdd9e5',
+    color: 'var(--text)',
     outline: 'none',
     cursor: 'pointer',
     width: 0,
   },
   refreshBtn: {
-    background: '#1c2733',
+    background: 'var(--surface2)',
     border: 'none',
     borderRadius: 6,
     padding: '5px 8px',
-    color: '#768fa0',
+    color: 'var(--text)',
     cursor: 'pointer',
     fontSize: '0.85rem',
     transition: 'all .2s',
@@ -207,25 +207,25 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     padding: '8px 6px',
-    background: '#080b0f',
-    border: '1px solid #1c2733',
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
     borderRadius: 6,
-    color: '#4d6070',
+    color: 'var(--muted)',
     cursor: 'pointer',
     fontSize: '0.9rem',
     transition: 'all .18s',
     fontFamily: 'IBM Plex Mono, monospace',
   },
   modeBtnActive: {
-    background: '#0d1117',
+    background: 'var(--surface)',
   },
   chatHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 },
   newBtn: {
-    background: '#00d4aa22',
-    border: '1px solid #00d4aa44',
+    background: 'var(--surface2)',
+    border: '1px solid var(--border2)',
     borderRadius: 5,
     padding: '3px 8px',
-    color: '#00d4aa',
+    color: 'var(--text)',
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: '0.65rem',
     cursor: 'pointer',
@@ -242,19 +242,19 @@ const styles = {
     transition: 'background .15s',
     gap: 6,
   },
-  chatItemActive: { background: '#111820', border: '1px solid #1c2733' },
-  chatTitle: { fontSize: '0.72rem', color: '#cdd9e5', flex: 1 },
+  chatItemActive: { background: 'var(--surface2)', border: '1px solid var(--border)' },
+  chatTitle: { fontSize: '0.72rem', color: 'var(--text)', flex: 1 },
   chatActions: { display: 'flex', gap: 4, flexShrink: 0 },
-  actionBtn: { color: '#4d6070', fontSize: '0.72rem', cursor: 'pointer', padding: '0 2px' },
+  actionBtn: { color: 'var(--muted)', fontSize: '0.72rem', cursor: 'pointer', padding: '0 2px' },
   editInput: {
     flex: 1,
-    background: '#080b0f',
-    border: '1px solid #00d4aa',
+    background: 'var(--bg)',
+    border: '1px solid var(--accent)',
     borderRadius: 4,
     padding: '3px 6px',
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: '0.7rem',
-    color: '#cdd9e5',
+    color: 'var(--text)',
     outline: 'none',
     width: 0,
   },

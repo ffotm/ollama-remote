@@ -254,7 +254,7 @@ const styles = {
     display: 'flex',
     height: '100vh',
     overflow: 'hidden',
-    background: '#080b0f',
+    background: 'var(--bg)',
   },
   main: {
     flex: 1,

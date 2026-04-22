@@ -1,19 +1,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #080b0f;
-  --surface:   #0d1117;
-  --surface2:  #111820;
-  --border:    #1c2733;
-  --border2:   #243040;
-  --accent:    #00d4aa;
-  --accent2:   #0097ff;
-  --danger:    #ff4d6d;
-  --warn:      #ffb347;
-  --green:     #39d353;
-  --text:      #cdd9e5;
-  --muted:     #4d6070;
-  --muted2:    #768fa0;
+  --bg:        #EAF4D3;
+  --surface:   #DBD8AE;
+  --surface2:  #CA907E;
+  --border:    #895B1E;
+  --border2:   #994636;
+  --accent:    #994636;
+  --accent2:   #CA907E;
+  --danger:    #994636;
+  --warn:      #CA907E;
+  --green:     #895B1E;
+  --text:      #895B1E;
+  --muted:     #994636;
+  --muted2:    #CA907E;
   --font-mono: 'IBM Plex Mono', monospace;
   --font-body: 'Archivo', sans-serif;
   --font-head: 'Archivo Black', sans-serif;
@@ -40,13 +40,13 @@ html, body, #root {
 
 /* Highlight.js theme override */
 .hljs {
-  background: #0a0f14 !important;
-  color: #cdd9e5 !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
 }
-.hljs-keyword  { color: #f47067 !important; }
-.hljs-string   { color: #96d0ff !important; }
-.hljs-comment  { color: #4d6070 !important; font-style: italic; }
-.hljs-function { color: #dcbdfb !important; }
-.hljs-number   { color: #6bc46d !important; }
-.hljs-title    { color: #00d4aa !important; }
-.hljs-built_in { color: #ffb347 !important; }
+.hljs-keyword  { color: var(--accent) !important; }
+.hljs-string   { color: var(--border2) !important; }
+.hljs-comment  { color: var(--muted) !important; font-style: italic; }
+.hljs-function { color: var(--accent2) !important; }
+.hljs-number   { color: var(--accent) !important; }
+.hljs-title    { color: var(--text) !important; }
+.hljs-built_in { color: var(--warn) !important; }
