@@ -1,4 +1,5 @@
 import './globals.css'
+import '../src/index.css'
 
 export const metadata = {
   title: 'Ollama UI',
