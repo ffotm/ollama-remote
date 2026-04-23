@@ -19,21 +19,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+OLLAMA_BASE_URL = ""
 
-OLLAMA_BASE = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_BASE = OLLAMA_BASE_URL
 
 init_db()
 
 # ── MODELS ──────────────────────────────────────────────
 @app.get("/api/models")
 async def get_models():
-    async with httpx.AsyncClient(timeout=10) as client:
+    async with httpx.AsyncClient(timeout=10, headers={"ngrok-skip-browser-warning": "true"}) as client:
         try:
             res = await client.get(f"{OLLAMA_BASE}/api/tags")
             return res.json()
         except Exception as e:
             raise HTTPException(status_code=503, detail=f"Ollama unreachable: {e}")
-
 # ── CONVERSATIONS ────────────────────────────────────────
 @app.get("/api/conversations")
 def list_conversations():
