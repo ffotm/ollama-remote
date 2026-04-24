@@ -29,6 +29,17 @@ html, body, #root {
   -webkit-font-smoothing: antialiased;
 }
 
+input::placeholder,
+textarea::placeholder,
+select {
+  color: var(--muted);
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 0.6;
+}
+
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }

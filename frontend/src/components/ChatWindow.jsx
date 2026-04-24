@@ -142,7 +142,7 @@ const styles = {
     userSelect: 'none',
   },
   emptyIcon: { fontSize: '2.5rem', color: 'var(--muted2)' },
-  emptyTitle: { fontFamily: 'Archivo Black, sans-serif', fontSize: '1.4rem', color: 'var(--text)', letterSpacing: '0.08em' },
+  emptyTitle: { fontFamily: 'Archivo Black, sans-serif', fontSize: '1.4rem', color: 'var(--accent)', letterSpacing: '0.08em' },
   emptyMode: { display: 'flex', gap: 8, alignItems: 'center' },
   modeBadge: { border: '1px solid', borderRadius: 4, padding: '2px 8px', fontSize: '0.65rem', letterSpacing: '0.1em' },
   modelBadge: { background: 'var(--surface2)', borderRadius: 4, padding: '2px 8px', fontSize: '0.65rem', color: 'var(--text)' },

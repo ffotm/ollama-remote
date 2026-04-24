@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Sidebar from './components/Sidebar.jsx'
 import ChatWindow from './components/ChatWindow.jsx'
 import InputBar from './components/InputBar.jsx'
+import ColorPalette from './components/ColorPalette.jsx'
 
 export default function App() {
   const [conversations, setConversations] = useState([])
@@ -15,6 +16,7 @@ export default function App() {
   const [mode, setMode]                   = useState('general')
   const [endpoint, setEndpoint]           = useState('http://localhost:11434')
   const [status, setStatus]               = useState('idle')
+  const [paletteOpen, setPaletteOpen]     = useState(false)
 
   // ── LOAD CONVOS ──────────────────────────────────────
   const loadConversations = useCallback(async () => {
@@ -242,6 +244,31 @@ export default function App() {
         status={status}
       />
       <div style={styles.main}>
+        {/* Palette Icon Button */}
+        <button
+          style={styles.paletteIcon}
+          onClick={() => setPaletteOpen(!paletteOpen)}
+          title="Color Palette"
+        >
+          ◆
+        </button>
+
+        {/* Palette Panel */}
+        {paletteOpen && (
+          <div style={styles.palettePanel}>
+            <div style={styles.palettePanelHeader}>
+              <span style={styles.palettePanelTitle}>🎨 Color Palette</span>
+              <button
+                style={styles.palettePanelClose}
+                onClick={() => setPaletteOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <ColorPalette />
+          </div>
+        )}
+
         <ChatWindow messages={messages} streaming={streaming} mode={mode} model={model} />
         <InputBar onSend={handleSendWithAutoCreate} disabled={streaming} mode={mode} />
       </div>
@@ -249,12 +276,13 @@ export default function App() {
   )
 }
 
+// In App.jsx
 const styles = {
   app: {
     display: 'flex',
     height: '100vh',
     overflow: 'hidden',
-    background: 'var(--bg)',
+    backgroundColor: 'transparent',
   },
   main: {
     flex: 1,
@@ -262,5 +290,69 @@ const styles = {
     flexDirection: 'column',
     overflow: 'hidden',
     minWidth: 0,
+    position: 'relative',
+    backgroundColor: 'var(--bg-main)',
+    backdropFilter: 'var(--glass-blur)',
+    WebkitBackdropFilter: 'var(--glass-blur)',
+    borderLeft: '1px solid var(--border-color)',
+  },
+  // Palette Icon
+  paletteIcon: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 6,
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    color: 'var(--accent)',
+    fontSize: '1.1rem',
+    cursor: 'pointer',
+    transition: 'all .2s',
+    zIndex: 100,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+  },
+  // Palette Panel
+  palettePanel: {
+    position: 'absolute',
+    top: 54,
+    right: 12,
+    width: 280,
+    maxHeight: 'calc(100vh - 100px)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: 8,
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+    zIndex: 99,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  palettePanelHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '12px 12px',
+    borderBottom: '1px solid var(--border)',
+    flexShrink: 0,
+  },
+  palettePanelTitle: {
+    fontFamily: 'Archivo Black, sans-serif',
+    fontSize: '0.85rem',
+    color: 'var(--text)',
+    letterSpacing: '0.05em',
+  },
+  palettePanelClose: {
+    background: 'none',
+    border: 'none',
+    color: 'var(--muted)',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    padding: '2px 6px',
+    transition: 'color .2s',
   },
 }
