@@ -19,7 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-OLLAMA_BASE_URL = "https://delaware-script-metro-dragon.trycloudflare.com"
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 OLLAMA_BASE = OLLAMA_BASE_URL
 CF_HEADERS = {
