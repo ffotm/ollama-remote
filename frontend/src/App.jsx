@@ -105,7 +105,7 @@ export default function App() {
           message,
           images: images?.length ? images : undefined,
           mode,
-          ollama_base: endpoint,
+          
         }),
       })
 
@@ -186,7 +186,7 @@ export default function App() {
           message,
           images: images?.length ? images : undefined,
           mode,
-          ollama_base: endpoint,
+          
         }),
       })
 

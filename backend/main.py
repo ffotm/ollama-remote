@@ -19,16 +19,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-OLLAMA_BASE_URL = ""
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
 
 OLLAMA_BASE = OLLAMA_BASE_URL
+CF_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+}
 
 init_db()
 
 # ── MODELS ──────────────────────────────────────────────
 @app.get("/api/models")
 async def get_models():
-    async with httpx.AsyncClient(timeout=10, headers={"ngrok-skip-browser-warning": "true"}) as client:
+    async with httpx.AsyncClient(timeout=10, headers=CF_HEADERS) as client:
         try:
             res = await client.get(f"{OLLAMA_BASE}/api/tags")
             return res.json()
@@ -88,8 +95,19 @@ async def upload_file(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"File read error: {e}")
 
+
+@app.get("/api/test")
+async def test_connection():
+    async with httpx.AsyncClient(timeout=10, headers={"User-Agent": "curl/7.68.0"}) as client:
+        try:
+            res = await client.get(f"{OLLAMA_BASE}/api/tags")
+            return {"status": "ok", "code": res.status_code, "body": res.text[:200]}
+        except Exception as e:
+            return {"status": "error", "detail": str(e)}
+
 # ── CHAT STREAM ──────────────────────────────────────────
-class ChatRequest(BaseModel):
+class ChatRequest(BaseModel):  
+
     conversation_id: str
     model: str
     message: str
@@ -158,7 +176,7 @@ async def chat(req: ChatRequest):
     async def stream():
         full_reply = ""
         try:
-            async with httpx.AsyncClient(timeout=120) as client:
+            async with httpx.AsyncClient(timeout=120, headers=CF_HEADERS) as client:
                 async with client.stream("POST", f"{base}/api/chat", json={
                     "model": req.model,
                     "stream": True,
@@ -183,5 +201,12 @@ async def chat(req: ChatRequest):
             if full_reply:
                 save_message(req.conversation_id, "assistant", full_reply)
             yield "data: [DONE]\n\n"
-
-    return StreamingResponse(stream(), media_type="text/event-stream")
+    return StreamingResponse(
+    stream(), 
+    media_type="text/event-stream",
+    headers={
+        "X-Accel-Buffering": "no",  # Disables buffering in Nginx/Proxies
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+    }
+)
