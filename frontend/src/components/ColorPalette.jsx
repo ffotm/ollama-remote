@@ -147,6 +147,8 @@ export default function ColorPalette({ onColorSelect }) {
     const dark30 = adjustBrightness(color, -35)
     const dark40 = adjustBrightness(color, -50)
     const dark50 = adjustBrightness(color, -70)
+    const accentRgb = hexToRgb(color)
+    const accent2Rgb = hexToRgb(dark20)
 
     // Primary colors
     root.style.setProperty('--accent', color)
@@ -162,6 +164,10 @@ export default function ColorPalette({ onColorSelect }) {
     // Muted/secondary colors
     root.style.setProperty('--muted', dark10)
     root.style.setProperty('--muted2', dark20)
+    root.style.setProperty('--text', dark50)
+    root.style.setProperty('--chat-user-text', dark50)
+    root.style.setProperty('--accent-rgb', `${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}`)
+    root.style.setProperty('--accent2-rgb', `${accent2Rgb.r}, ${accent2Rgb.g}, ${accent2Rgb.b}`)
 
     // Background colors - scaled from the base color
     root.style.setProperty('--bg', light50)

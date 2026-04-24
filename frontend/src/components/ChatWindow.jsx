@@ -49,15 +49,16 @@ export default function ChatWindow({ messages, streaming, mode, model }) {
   if (messages.length === 0) {
     return (
       <div style={styles.empty}>
-        <div style={styles.emptyIcon}>◈</div>
-        <div style={styles.emptyTitle}>Ready</div>
+        <div style={styles.emptyGlow} />
+        <div style={styles.emptyIcon}>◎</div>
+        <div style={styles.emptyTitle}>Your AI Workspace Is Ready</div>
         <div style={styles.emptyMode} className="mono">
           <span style={{...styles.modeBadge, borderColor: modeInfo.color, color: modeInfo.color}}>
             {modeInfo.label}
           </span>
           {model && <span style={styles.modelBadge}>{model}</span>}
         </div>
-        <div style={styles.emptyHint}>Start typing below, or attach a file with 📎</div>
+        <div style={styles.emptyHint}>Ask anything, attach context, and stream answers in real time.</div>
       </div>
     )
   }
@@ -87,7 +88,7 @@ export default function ChatWindow({ messages, streaming, mode, model }) {
                   td({ children }) { return <td style={styles.td}>{children}</td> },
                   blockquote({ children }) { return <blockquote style={styles.blockquote}>{children}</blockquote> },
                   strong({ children }) { return <strong style={{color: 'var(--text)'}}>{children}</strong> },
-                  a({ href, children }) { return <a href={href} target="_blank" rel="noreferrer" style={{color: 'var(--accent2)'}}>{children}</a> },
+                  a({ href, children }) { return <a href={href} target="_blank" rel="noreferrer" style={{color: 'var(--accent)'}}>{children}</a> },
                 }}
               >
                 {msg.content}
@@ -126,10 +127,10 @@ const styles = {
   container: {
     flex: 1,
     overflowY: 'auto',
-    padding: '24px 28px',
+    padding: '28px clamp(14px, 3vw, 34px)',
     display: 'flex',
     flexDirection: 'column',
-    gap: 20,
+    gap: 18,
   },
   empty: {
     flex: 1,
@@ -140,49 +141,65 @@ const styles = {
     gap: 12,
     color: 'var(--muted)',
     userSelect: 'none',
+    textAlign: 'center',
+    position: 'relative',
+    animation: 'reveal-up .4s ease',
   },
-  emptyIcon: { fontSize: '2.5rem', color: 'var(--muted2)' },
-  emptyTitle: { fontFamily: 'Archivo Black, sans-serif', fontSize: '1.4rem', color: 'var(--accent)', letterSpacing: '0.08em' },
+  emptyGlow: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: '50%',
+    background: 'var(--accent-bg-glow)',
+    filter: 'blur(1px)',
+    zIndex: -1,
+  },
+  emptyIcon: { fontSize: '2.3rem', color: 'var(--accent)', lineHeight: 1, animation: 'pulse-ring 1.8s ease-out infinite' },
+  emptyTitle: { fontFamily: 'Archivo Black, sans-serif', fontSize: '1.25rem', color: 'var(--text)', letterSpacing: '0.03em' },
   emptyMode: { display: 'flex', gap: 8, alignItems: 'center' },
-  modeBadge: { border: '1px solid', borderRadius: 4, padding: '2px 8px', fontSize: '0.65rem', letterSpacing: '0.1em' },
-  modelBadge: { background: 'var(--surface2)', borderRadius: 4, padding: '2px 8px', fontSize: '0.65rem', color: 'var(--text)' },
-  emptyHint: { fontSize: '0.75rem', color: 'var(--muted)', fontFamily: 'IBM Plex Mono, monospace' },
+  modeBadge: { border: '1px solid', borderRadius: 999, padding: '4px 10px', fontSize: '0.62rem', letterSpacing: '0.12em', background: 'var(--surface-glass-48)' },
+  modelBadge: { background: 'var(--surface2)', borderRadius: 999, padding: '4px 10px', fontSize: '0.62rem', color: 'var(--text)', border: '1px solid var(--border)' },
+  emptyHint: { fontSize: '0.78rem', color: 'var(--muted)', fontFamily: 'IBM Plex Mono, monospace', maxWidth: 460, lineHeight: 1.5 },
 
-  msgRow: { display: 'flex', flexDirection: 'column', gap: 6, maxWidth: 860, alignSelf: 'flex-start', width: '100%' },
+  msgRow: { display: 'flex', flexDirection: 'column', gap: 7, maxWidth: 900, alignSelf: 'flex-start', width: '100%', animation: 'reveal-up .26s ease' },
   userRow: { alignSelf: 'flex-end', alignItems: 'flex-end' },
-  aiLabel: { fontSize: '0.6rem', color: 'var(--accent)', letterSpacing: '0.1em', paddingLeft: 2 },
-  userLabel: { fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.1em', paddingRight: 2 },
+  aiLabel: { fontSize: '0.6rem', color: 'var(--accent)', letterSpacing: '0.12em', paddingLeft: 4, textTransform: 'uppercase' },
+  userLabel: { fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.12em', paddingRight: 4, textTransform: 'uppercase' },
 
   userBubble: {
-    background: 'var(--surface2)',
-    border: '1px solid var(--border)',
-    borderRadius: '12px 12px 4px 12px',
-    padding: '10px 14px',
-    maxWidth: '70%',
+    background: 'linear-gradient(145deg, rgba(var(--accent-rgb), 0.14), rgba(var(--accent2-rgb), 0.08))',
+    border: '1px solid var(--accent-border-mid)',
+    borderRadius: '18px 18px 6px 18px',
+    padding: '11px 14px',
+    maxWidth: '78%',
+    boxShadow: '0 8px 20px rgba(var(--accent-rgb), 0.15)',
   },
   aiBubble: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '4px 12px 12px 12px',
-    padding: '12px 16px',
+    borderRadius: '6px 18px 18px 18px',
+    padding: '13px 16px',
     lineHeight: 1.7,
     fontSize: '0.85rem',
+    boxShadow: 'var(--shadow-soft)',
+    backdropFilter: 'var(--glass-blur)',
+    WebkitBackdropFilter: 'var(--glass-blur)',
   },
-  userText: { fontSize: '0.85rem', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' },
+  userText: { fontSize: '0.85rem', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--chat-user-text)' },
 
   inlineCode: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
+    background: 'var(--accent-bg-soft)',
+    border: '1px solid rgba(var(--accent-rgb), 0.18)',
     padding: '1px 5px',
-    borderRadius: 4,
+    borderRadius: 6,
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: '0.8em',
     color: 'var(--accent)',
   },
   codeWrap: {
-    background: 'var(--surface)',
+    background: 'var(--code-surface)',
     border: '1px solid var(--border)',
-    borderRadius: 8,
+    borderRadius: 10,
     overflow: 'hidden',
     margin: '10px 0',
   },
@@ -190,15 +207,15 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '5px 12px',
-    background: 'var(--bg)',
+    padding: '6px 12px',
+    background: 'var(--surface2)',
     borderBottom: '1px solid var(--border)',
   },
   codeLang: { fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' },
   copyBtn: {
-    background: 'none',
+    background: 'var(--surface-glass-72)',
     border: '1px solid var(--border)',
-    borderRadius: 4,
+    borderRadius: 6,
     padding: '2px 6px',
     color: 'var(--muted)',
     cursor: 'pointer',
@@ -215,7 +232,7 @@ const styles = {
   },
   tableWrap: { overflowX: 'auto', margin: '10px 0' },
   table: { borderCollapse: 'collapse', fontSize: '0.8rem', width: '100%' },
-  th: { padding: '6px 12px', background: 'var(--surface2)', borderBottom: '1px solid var(--border)', textAlign: 'left', fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.7rem', color: 'var(--text)' },
+  th: { padding: '6px 12px', background: 'var(--table-header-bg)', borderBottom: '1px solid var(--border)', textAlign: 'left', fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.7rem', color: 'var(--text)' },
   td: { padding: '6px 12px', borderBottom: '1px solid var(--border)' },
   blockquote: { borderLeft: '3px solid var(--accent)', paddingLeft: 12, color: 'var(--muted)', margin: '8px 0' },
 
