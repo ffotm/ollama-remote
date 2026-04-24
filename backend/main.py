@@ -19,7 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-OLLAMA_BASE_URL = "https://interviews-mhz-balance-healing.trycloudflare.com"
+OLLAMA_BASE_URL = "https://telecommunications-able-pan-dealing.trycloudflare.com"
 
 OLLAMA_BASE = OLLAMA_BASE_URL
 CF_HEADERS = {
