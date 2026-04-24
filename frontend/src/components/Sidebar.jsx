@@ -124,11 +124,12 @@ export default function Sidebar({
 
 const styles = {
   sidebar: {
-    width: 240,
-    minWidth: 240,
+    width: 260,
+    minWidth: 260,
     height: '100%',
-    background: 'var(--surface)',
-    borderRight: '1px solid var(--border)',
+    background: 'rgba(20, 27, 45, 0.88)',
+    borderRight: '1px solid var(--border2)',
+    backdropFilter: 'blur(10px)',
     display: 'flex',
     flexDirection: 'column',
     padding: '16px 12px',
@@ -144,7 +145,7 @@ const styles = {
     paddingBottom: 14,
     borderBottom: '1px solid var(--border)',
   },
-  logoIcon: { color: 'var(--accent)', fontSize: '1.1rem' },
+  logoIcon: { color: 'var(--accent2)', fontSize: '1.1rem' },
   logoText: {
     fontFamily: 'Archivo Black, sans-serif',
     fontSize: '0.85rem',
@@ -218,6 +219,7 @@ const styles = {
   },
   modeBtnActive: {
     background: 'var(--surface)',
+    boxShadow: '0 0 0 1px rgba(147, 197, 253, 0.2) inset',
   },
   chatHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 },
   newBtn: {
@@ -242,7 +244,7 @@ const styles = {
     transition: 'background .15s',
     gap: 6,
   },
-  chatItemActive: { background: 'var(--surface2)', border: '1px solid var(--border)' },
+  chatItemActive: { background: 'rgba(37, 99, 235, 0.22)', border: '1px solid rgba(96, 165, 250, 0.45)' },
   chatTitle: { fontSize: '0.72rem', color: 'var(--text)', flex: 1 },
   chatActions: { display: 'flex', gap: 4, flexShrink: 0 },
   actionBtn: { color: 'var(--muted)', fontSize: '0.72rem', cursor: 'pointer', padding: '0 2px' },

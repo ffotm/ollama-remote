@@ -1,19 +1,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #EAF4D3;
-  --surface:   #DBD8AE;
-  --surface2:  #CA907E;
-  --border:    #895B1E;
-  --border2:   #994636;
-  --accent:    #994636;
-  --accent2:   #CA907E;
-  --danger:    #994636;
-  --warn:      #CA907E;
-  --green:     #895B1E;
-  --text:      #895B1E;
-  --muted:     #994636;
-  --muted2:    #CA907E;
+  --bg:        #0b1020;
+  --surface:   #141b2d;
+  --surface2:  #1e2940;
+  --border:    #24324f;
+  --border2:   #32476f;
+  --accent:    #60a5fa;
+  --accent2:   #93c5fd;
+  --danger:    #f87171;
+  --warn:      #fbbf24;
+  --green:     #22c55e;
+  --text:      #e2e8f0;
+  --muted:     #94a3b8;
+  --muted2:    #64748b;
   --font-mono: 'IBM Plex Mono', monospace;
   --font-body: 'Archivo', sans-serif;
   --font-head: 'Archivo Black', sans-serif;
@@ -22,7 +22,7 @@
 
 html, body, #root {
   height: 100%;
-  background: var(--bg);
+  background: radial-gradient(circle at 15% 10%, #1d2842 0%, #0b1020 55%, #060913 100%);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 14px;
@@ -43,7 +43,7 @@ textarea::placeholder {
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* Utility */
 .mono { font-family: var(--font-mono); }
