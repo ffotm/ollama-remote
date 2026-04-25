@@ -1,15 +1,31 @@
 # ◈ ollama-ui
 
-A local chat interface for Ollama with conversation history, file attachments, and security-focused modes.  
-Built with Next.js + FastAPI + SQLite.
+A self-hosted AI security workbench for the homelab. Runs entirely local — no cloud, no API keys, no data leaving your machine.  
+Built to assist with day-to-day security research: explaining CVEs with live NVD data, analyzing logs, and auditing code — all through a local LLM.
+
+> **Homelab context:** Designed to run on a local machine or home server alongside tools like Wazuh, Suricata, or OpenVAS. Feed it your actual lab logs, paste CVEs you're researching, or throw code at it for a second opinion.
 
 ---
 
 ## Stack
 
-- **Frontend**: Next.js (runs on `:5173`)
-- **Backend**: FastAPI + SQLite (runs on `:8000`)
-- **Inference**: Ollama (local or Colab GPU via ngrok)
+| Layer | Tech |
+|---|---|
+| Frontend | Next.js (`:5173`) |
+| Backend | FastAPI + SQLite (`:8000`) |
+| Inference | Ollama — local GPU or Colab T4 via ngrok |
+| Threat Intel | NVD API (live CVE data, no key required) |
+
+---
+
+## Security Modes
+
+| Mode | What it actually does |
+|---|---|
+| **CVE Explainer** | Fetches live data from NVD API for the CVE you mention — CVSS breakdown, affected versions, references. Model explains real data, not training memory. |
+| **Log Analyzer** | Auto-detects log format (nginx, auth.log, syslog, Windows Event, CEF, CloudTrail, iptables, and more). Chunks large files so nothing overflows context. Produces per-chunk findings + aggregated summary with severity levels. |
+| **Code Auditor** | Detects language automatically. Walks through OWASP Top 10 systematically. Tags findings with CWE IDs and severity. Ends with a /10 security score. |
+| **General** | Standard assistant for everything else. |
 
 ---
 
@@ -17,13 +33,13 @@ Built with Next.js + FastAPI + SQLite.
 
 - Python 3.10+
 - Node.js 18+
-- Ollama installed → https://ollama.com
+- Ollama → https://ollama.com
 
 ---
 
-## Quick Start (local)
+## Quick Start
 
-### 1. Start Ollama with CORS enabled
+### 1. Start Ollama
 ```bash
 OLLAMA_ORIGINS=* ollama serve
 ```
@@ -31,11 +47,15 @@ OLLAMA_ORIGINS=* ollama serve
 ### 2. Pull a model
 ```bash
 ollama pull llama3.2
-# For image support:
+
+# For image support (analyzing screenshots, diagrams):
 ollama pull llava
+
+# Better for code auditing if your machine can handle it:
+ollama pull codellama
 ```
 
-### 3. Run the app
+### 3. Run
 ```bash
 chmod +x start.sh
 ./start.sh
@@ -45,16 +65,15 @@ Open → **http://localhost:5173**
 
 ---
 
-## Free GPU via Google Colab
+## No GPU? Use Google Colab (free T4)
 
-If you don't have a GPU, run Ollama on Colab's free T4:
+Useful if you're running this on a low-spec home server or a laptop.
 
 1. Open https://colab.research.google.com
 2. Runtime → Change runtime type → **T4 GPU**
-3. Run these cells:
 
 ```python
-# Cell 1 — Install & start Ollama
+# Cell 1 — Install and start Ollama
 !curl -fsSL https://ollama.com/install.sh | sh
 import subprocess, time
 subprocess.Popen(["ollama", "serve"])
@@ -62,41 +81,34 @@ time.sleep(3)
 ```
 
 ```python
-# Cell 2 — Expose with ngrok
+# Cell 2 — Expose via ngrok
 !pip install pyngrok -q
 from pyngrok import ngrok
 tunnel = ngrok.connect(11434)
-print("Paste this into the endpoint box:", tunnel.public_url)
+print("Paste this URL into the ENDPOINT box:", tunnel.public_url)
 ```
 
 ```python
 # Cell 3 — Pull a model
 !ollama pull llama3.2
-# Good models to try: mistral, phi3, llava (multimodal), codellama
 ```
 
-4. Paste the ngrok URL into the **ENDPOINT** box in the sidebar
-5. Click **⟳** to load models
+Paste the ngrok URL into the **ENDPOINT** field in the sidebar → click **⟳**.
 
 ---
 
-## Features
+## Homelab Integration Ideas
 
-| Feature | Details |
-|---|---|
-| Conversation history | Saved to SQLite, resumable from sidebar |
-| File attachments | Images (sent to model), PDFs (text extracted), text/code files |
-| Model switcher | Lists all models pulled in Ollama |
-| Mode: General | Standard assistant |
-| Mode: CVE Explainer | Explains vulnerabilities, CVSS, mitigations |
-| Mode: Log Analyzer | Flags suspicious activity with severity levels |
-| Mode: Code Auditor | Reviews code for security vulnerabilities (OWASP/CWE) |
-| Streaming | Tokens appear as they're generated |
-| Markdown + syntax highlighting | Code blocks with copy button |
+This tool is most useful when it has real data to work with:
+
+- **Wazuh** — pipe alert logs into the Log Analyzer for AI-assisted triage
+- **Suricata** — feed IDS alerts for pattern explanation and severity context
+- **OpenVAS/Greenbone** — paste CVEs from scan reports into CVE Explainer for deeper breakdowns
+- **Your own CTF/lab VMs** — run Code Auditor against intentionally vulnerable apps (DVWA, VulnHub) to see what it catches
 
 ---
 
-## Manual Setup (without start.sh)
+## Manual Setup
 
 ### Backend
 ```bash
@@ -121,22 +133,46 @@ npm run dev
 ```
 ollama-ui/
 ├── backend/
-│   ├── main.py          # FastAPI routes + streaming
-│   ├── database.py      # SQLite operations
+│   ├── main.py                  # App entry, /api/chat route + mode routing
+│   ├── config.py                # Env vars and constants
+│   ├── prompts.py               # All LLM system prompts
+│   ├── ollama.py                # Streaming + blocking Ollama HTTP wrappers
+│   ├── database.py              # SQLite conversation persistence
+│   ├── routers/
+│   │   ├── models.py            # GET /api/models, /api/test
+│   │   ├── conversations.py     # Conversation CRUD
+│   │   └── upload.py            # File upload + PDF extraction
+│   ├── analyzers/
+│   │   ├── cve.py               # NVD API fetch, CVSS parsing, context builder
+│   │   ├── log.py               # Format detection (12 formats), chunking
+│   │   └── code.py              # Language detection (15 langs), OWASP checklist
 │   └── requirements.txt
 ├── frontend/
 │   ├── app/
-│   │   ├── layout.jsx            # Next.js root layout + fonts
-│   │   ├── page.jsx              # Next.js entry page
-│   │   └── globals.css           # Global style import
+│   │   ├── layout.jsx
+│   │   ├── page.jsx
+│   │   └── globals.css
 │   ├── src/
-│   │   ├── App.jsx               # Main state + layout
+│   │   ├── App.jsx
 │   │   └── components/
-│   │       ├── Sidebar.jsx       # Convos, model, mode, endpoint
-│   │       ├── ChatWindow.jsx    # Messages + markdown rendering
-│   │       └── InputBar.jsx      # Textarea + file upload
+│   │       ├── Sidebar.jsx      # Conversations, model, mode, endpoint
+│   │       ├── ChatWindow.jsx   # Messages + markdown rendering
+│   │       └── InputBar.jsx     # Textarea + file upload
 │   ├── next.config.mjs
 │   └── package.json
 ├── start.sh
 └── README.md
+```
+
+---
+
+## Environment Variables
+
+```bash
+# Optional — unauthenticated NVD access works but is rate-limited (8 req/30s)
+# Register free at https://nvd.nist.gov/developers/request-an-api-key for 50 req/30s
+NVD_API_KEY=your_key_here
+
+# Override default Ollama endpoint (useful for remote/Colab setups)
+OLLAMA_BASE_URL=https://your-ngrok-url.trycloudflare.com
 ```
